@@ -153,39 +153,51 @@ public class Main {
 		listaOrdini.forEach((customer, orders) -> System.out.println("ordini: " + customer + orders ));
 
 		System.out.println("--------------------------------ES2---------------------------");
-		Map<Customer, Double> total = orders.stream().collect(Collectors.groupingBy(Order::getCustomer,
-				Collectors.summingDouble(order -> order.getProducts().stream().mapToDouble(Product::getPrice).sum())));
-		total.forEach((customer, dbl)-> System.out.println(customer.getName() + "total" + dbl));
+		Map<Customer, Double> total = orders
+				.stream()
+				.collect(Collectors.groupingBy(Order::getCustomer, Collectors.summingDouble(order -> order.getProducts()
+						.stream()
+						.mapToDouble(Product::getPrice)
+						.sum())));
+		total.forEach((customer, dbl)-> System.out.println(customer.getName() + " " + "total: " + dbl));
 
 		System.out.println("--------------------------------ES3---------------------------");
-		List<Product> productExpansive = warehouse.stream().sorted(Comparator.comparingDouble(Product::getPrice).reversed()).toList();
+		List<Product> productExpansive = warehouse.stream().limit(3).sorted(Comparator.comparingDouble(Product::getPrice).reversed()).toList();
 		productExpansive.forEach(System.out::println);
 
 		System.out.println("--------------------------------ES4---------------------------");
-		// Map<List<Order>, Double> media = orders.stream().collect(Collectors.groupingBy(Product::getPrice, Collectors.averagingDouble(Product::getPrice)));
-		// media.forEach((ordine, mediaimport) -> System.out.println(ordine + "a" + mediaimport));
+		double avrg = orders.stream().mapToDouble(Order::getTotal).average().getAsDouble();
+		System.out.println("media importi ordini" + avrg);
 
 		System.out.println("--------------------------------ES5---------------------------");
-		List<Product> rag = warehouse.stream().sorted(Comparator.comparing(Product::getCategory)).toList();
-		rag.forEach(System.out::println);
+//		List<Product> rag = warehouse.stream().sorted(Comparator.comparing(Product::getCategory)).toList();
+//		rag.forEach(System.out::println);
+//
+//		System.out.println("--------------BOOKS------------");
+//		List<Product> book = warehouse.stream().filter(product -> product.getCategory().equals("Books")).toList();
+//		book.forEach(System.out::println);
+//		double books = book.stream().mapToDouble(Product::getPrice).sum();
+//		System.out.println(books);
+//
+//		System.out.println("---------------BABY-------------");
+//		List<Product> baby = warehouse.stream().filter(product -> product.getCategory().equals("Baby")).toList();
+//		baby.forEach(System.out::println);
+//		double babys = baby.stream().mapToDouble(Product::getPrice).sum();
+//		System.out.println(babys);
+//
+//		System.out.println("-----------------BOYS-----------");
+//		List<Product> boys = warehouse.stream().filter(product -> product.getCategory().equals("Boys")).toList();
+//		boys.forEach(System.out::println);
+//		double boyss = boys.stream().mapToDouble(Product::getPrice).sum();
+//		System.out.println(boyss);
 
-		System.out.println("--------------BOOKS------------");
-		List<Product> book = warehouse.stream().filter(product -> product.getCategory().equals("Books")).toList();
-		book.forEach(System.out::println);
-		double books = book.stream().mapToDouble(Product::getPrice).sum();
-		System.out.println(books);
 
-		System.out.println("---------------BABY-------------");
-		List<Product> baby = warehouse.stream().filter(product -> product.getCategory().equals("Baby")).toList();
-		baby.forEach(System.out::println);
-		double babys = baby.stream().mapToDouble(Product::getPrice).sum();
-		System.out.println(babys);
-
-		System.out.println("-----------------BOYS-----------");
-		List<Product> boys = warehouse.stream().filter(product -> product.getCategory().equals("Boys")).toList();
-		boys.forEach(System.out::println);
-		double boyss = boys.stream().mapToDouble(Product::getPrice).sum();
-		System.out.println(boyss);
+		Map<String, Double> totalCategoryValues = warehouse
+				.stream()
+				.collect(Collectors.groupingBy(Product::getCategory, Collectors.summingDouble(Product::getPrice)));
+		totalCategoryValues.forEach((category, tot) -> {
+			System.out.println("Category: " + category + "; Total value = " + tot + "€");
+		});
 
 	}
 }
